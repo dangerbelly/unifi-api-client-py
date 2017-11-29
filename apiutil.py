@@ -35,6 +35,8 @@ class Client():
         url = self.base_url + endpoint
         data = {"username":"captainunderpants","password":"funny-farm-frank","remember":"false","strict":"true"}
         r = self.s.post(url, json=data, verify=False)
+        self.token = r.cookies['csrf_token']
+
         return r
 
 
@@ -262,6 +264,8 @@ class Client():
         endpoint = '/api/s/' + site + '/cmd/sitemgr'
         data = {"cmd":"add-site","desc":desc}
         url = self.base_url + endpoint
+        url_suffix = self.base_url + '/manage/site/' + site + '/dashboard'
+        self.s.headers.update({"X-Csrf-Token":self.token,"referer":url_suffix})
         r = self.s.post(url, json=data)
         return r
 
