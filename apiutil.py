@@ -1,6 +1,7 @@
 #A python port of the php unifi-api-client
 #http://tom-henderson.github.io/2015/05/12/unifi-python.html
 import requests
+import json
 
 
 class Client():
@@ -22,22 +23,27 @@ class Client():
                  'User-Agent': 'python-requests/2.4.3 CPython/3.4.0'
                  })
 
-        data = {"username":"captainunderpants","password":"funny-farm-frank","remember":"false","strict":"true"}
-
-        self.r = self.s.post('https://localhost:8443/api/login', json=data, verify=False)
-
+        #data = {"username":"captainunderpants","password":"funny-farm-frank","remember":"false","strict":"true"}
+        #url = 'https://localhost:8443/api/login'
+        #self.s.post(url, json=data, verify=False)
 
         return None
 
-##API routes
-#    def login():
-#        endpoint = '/api/login'
-#        endpoint2 = '/login'
-#        data = {"username":USER,"password":PASSWORD}
+    #API routes
+    def login(self):
+        endpoint = '/api/login'
+        url = self.base_url + endpoint
+        data = {"username":"captainunderpants","password":"funny-farm-frank","remember":"false","strict":"true"}
+        r = self.s.post(url, json=data, verify=False)
+        return r
 
-#    def authorize_guest():
-#        endpoint = '/api/s/' + SITE + '/cmd/stamgr'
-#        data = {"cmd":"authorize-guest","mac":MAC,"minutes":MINUTES}
+
+#    def authorize_guest(self, site, mac, minutes, up = None, down = None, mbytes = None, ap_mac = None):
+#        endpoint = '/api/s/' + site + '/cmd/stamgr'
+#        url = self.base_url + endpoint
+#        data = {"cmd":"authorize-guest","mac":mac,"minutes":minutes}
+#        r = self.s.get(url, json=data)
+#        return r
 
 #    def unauthorize_guest():
 #        endpoint = '/api/s/' + SITE + '/cmd/stamgr'
@@ -198,27 +204,47 @@ class Client():
     def delete_usergroup(self, site, group_id):
         request_type = 'DELETE'
         endpoint = '/api/s/' + site + '/rest/usergroup/' + group_id
+        url = self.base_url + endpoint
         r = self.s.get(url)
         return r
 
-    def list_health():
-        endpoint = '/api/s/' + SITE + '/stat/health'
+    def list_health(self, site):
+        endpoint = '/api/s/' + site + '/stat/health'
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
 
-    def list_dashboard(FIVE_MINUTES = 'false'):
-        URL_SUFFIX = '?scale=5minutes'
-        endpoint = '/api/s/' + SITE + '/stat/dashboard' + URL_SUFFIX
 
-    def list_users():
-        endpoint = '/api/s/' + SITE + '/list/user'
+    def list_dashboard(self, site, five_minutes = 'false'):
+        url_suffix = '?scale=5minutes'
+        endpoint = '/api/s/' + site + '/stat/dashboard' + url_suffix
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
 
-    def list_devices(DEVICE_MAC):
-        endpoint = '/api/s/' + SITE + '/stat/device' + DEVICE_MAC
+    def list_users(self, site):
+        endpoint = '/api/s/' + site + '/list/user'
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
 
-    def list_tags():
-        endpoint = '/api/s/' + SITE + '/rest/tag'
+    def list_devices(self, site, device_mac):
+        endpoint = '/api/s/' + site + '/stat/device' + device_mac
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
 
-    def list_rogueaps():
-        endpoint = '/api/s/' + SITE + '/rest/rogueknown'
+    def list_tags(self, site):
+        endpoint = '/api/s/' + site + '/rest/tag'
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
+
+    def list_rogueaps(self, site):
+        endpoint = '/api/s/' + site + '/rest/rogueknown'
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
 
     def list_sites(self):
         endpoint = '/api/self/sites'
@@ -226,20 +252,29 @@ class Client():
         r = self.s.get(url)
         return r
 
-    def stat_site():
+    def stat_site(self):
         endpoint = '/api/stat/sites'
+        url = self.base_url + endpoint
+        r = self.s.get(url)
+        return r
 
-    def create_site(DESC):
-        endpoint = '/api/s/' + SITE + '/cmd/sitemgr'
-        data = {"desc":DESC, "cmd":"add-site"}
+    def create_site(self, site, desc):
+        endpoint = '/api/s/' + site + '/cmd/sitemgr'
+        data = {"cmd":"add-site","desc":desc}
+        url = self.base_url + endpoint
+        r = self.s.post(url, json=data)
+        return r
 
     def delete_site(SITE_ID):
         endpoint = '/api/s/' + SITE + '/cmd/sitemgr'
         data = {"site":SITE_ID, "cmd":"delete-site"}
 
     def list_admins():
-        endpooint = '/api/s/' + SITE + '/cmd/sitemgr'
+        endpoint = '/api/s/' + SITE + '/cmd/sitemgr'
+        url = self.base_url + endpoint
         data = {"cmd":"get-admins"}
+        r = self.s.post(url, json=data)
+        return r
 
     def list_wlan_groups():
         endpoint = '/api/s/' + SITE + '/list/wlangroup'
@@ -373,10 +408,10 @@ class Client():
         endpoint = '/api/s/' + SITE + '/cmd/sitemgr'
         data = {"mac":MAC,"cmd":"delete-device"}
 
-    def list_network_conf(self):
-        #SITE = 'default'
-        #endpoint = '/api/s/' + SITE + '/rest/networkconf'
-        url = 'https://localhost:8443/api/s/default/rest/networkconf'
+    def list_network_conf(self, site):
+        endpoint = '/api/s/' + site + '/rest/networkconf'
+        url = self.base_url + endpoint
+        #url = 'https://localhost:8443/api/s/default/rest/networkconf'
         r = self.s.get(url)
         return r
 
