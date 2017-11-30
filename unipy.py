@@ -91,14 +91,15 @@ class Client:
         data = {"attrs":attrs, "start":start, "end":end}
         return self.s.get(url, json=data)
 
-
-    def stat_sessions(self, site=None, start=0, end=0, mac=None, type='all'):
-        if not site:
-            site = self.default_site
-        endpoint = '/api/s' + site + '/stat/session'
-        url = self.base_url + endpoint
-        data = {"start":start, "end":end, "mac":mac}
-        return self.s.get(url, json=data)
+# MAC needed for this request
+#    def stat_sessions(self, site=None, start=0, end=0, mac=None, type='all'):
+#        if not site:
+#            site = self.default_site
+#        endpoint = '/api/s' + site + '/stat/session'
+#        url = self.base_url + endpoint
+#        data = {"start":start, "end":end, "mac":mac}
+#        url = self.base_url + endpoint
+#        return self.s.get(url, json=data)
 
     def stat_sta_sessions_latest(self, site=None ,mac=None,limit=0):
         if not site:
@@ -137,6 +138,8 @@ class Client:
     def list_clients(self, site=None, client_mac=None):
         if not site:
             site = self.default_site
+        if not client_mac:
+            client_mac = ''
         endpoint = '/api/s/' + site + '/stat/sta' + client_mac
         url = self.base_url + endpoint
         return self.s.get(url)
@@ -144,6 +147,8 @@ class Client:
     def stat_client(self, site=None, client_mac=None):
         if not site:
             site = self.default_site
+            if not client_mac:
+                client_mac = ''
         endpoint = '/api/s/' + site + '/stat/user' + client_mac
         url = self.base_url + endpoint
         return self.s.get(url)
@@ -155,38 +160,36 @@ class Client:
         url = self.base_url + endpoint
         return self.s.get(url)
 
-    def set_usergroup(self, site=None, user_id=None, group_id=None):
-        if not site:
-            site = self.default_site
-        endpoint = '/api/s/' + site + '/upd/user/' + user_id
-        url = self.base_url + endpoint
-        data = {"usergroup_id":group_id}
-        return self.s.get(url, json=data)
+#    def set_usergroup(self, site=None, user_id=None, group_id=None):
+#        if not site:
+#            site = self.default_site
+#        endpoint = '/api/s/' + site + '/upd/user/' + user_id
+#        url = self.base_url + endpoint
+#        data = {"usergroup_id":group_id}
+#        return self.s.get(url, json=data)
 
     # Update user group
-    def edit_usergroup(self, site=None, group_id=None,site_id=None,group_name=None,group_dn = -1,group_up = -1):
-        if not site:
-            site = self.default_site
-        endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
-        url = self.base_url + endpoint
-        data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
-        return self.s.get(url, json=data)
+#    def edit_usergroup(self, site=None, group_id=None,site_id=None,group_name=None,group_dn = -1,group_up = -1):
+#        if not site:
+#        endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
+#        url = self.base_url + endpoint
+#        data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
+#        return self.s.get(url, json=data)
 
-    def create_usergroup(self, site=None, group_name=None,grouop_dn = -1,group_up = -1):
-        if not site:
-            site = self.default_site
-        endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
-        url = self.base_url + endpoint
-        data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
-        return self.s.get(url, json=data)
+#    def create_usergroup(self, site=None, group_name=None,grouop_dn = -1,group_up = -1):
+#            site = self.default_site
+#        endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
+#        url = self.base_url + endpoint
+#        data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
+#        return self.s.get(url, json=data)
 
-    def delete_usergroup(self, site=None, group_id=None):
-        if not site:
-            site = self.default_site
-        request_type = 'DELETE'
-        endpoint = '/api/s/' + site + '/rest/usergroup/' + group_id
-        url = self.base_url + endpoint
-        return self.s.get(url)
+#    def delete_usergroup(self, site=None, group_id=None):
+#        if not site:
+#            site = self.default_site
+#        request_type = 'DELETE'
+#        endpoint = '/api/s/' + site + '/rest/usergroup/' + group_id
+#        url = self.base_url + endpoint
+#        return self.s.get(url)
 
     def list_health(self, site=None):
         if not site:
@@ -214,6 +217,8 @@ class Client:
     def list_devices(self, site=None, device_mac=None):
         if not site:
             site = self.default_site
+        if not device_mac:
+            device_mac = ''
         endpoint = '/api/s/' + site + '/stat/device' + device_mac
         url = self.base_url + endpoint
         return self.s.get(url)
@@ -248,6 +253,6 @@ class Client:
         endpoint = '/api/s/' + site + '/cmd/sitemgr'
         data = {"cmd":"add-site","desc":desc}
         url = self.base_url + endpoint
-        refereself.base_url + '/manage/site/' + site + '/dashboard'
+        referer = self.base_url + '/manage/site/' + site + '/dashboard'
         headers = {'X-Csrf-Token':self.csrf_token,'referer':referer}
         return self.s.post(url, json=data, headers=headers)
