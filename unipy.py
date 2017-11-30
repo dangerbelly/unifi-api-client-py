@@ -20,7 +20,7 @@ class Client:
                  'Host': 'localhost:8443',
                  'User-Agent': 'python-requests/2.4.3 CPython/3.4.0'
                  })
-q
+
         return None
 
     #GET methods
@@ -64,7 +64,7 @@ q
         data = {"attrs":attrs, "start":start, "end":end}
         return self.s.get(url, json=data)
 
-    def stat_5minutes_aps(self, site=None, start, end, mac):
+    def stat_5minutes_aps(self, site=None, start=0, end=0, mac=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/report/5minutes.ap'
@@ -73,7 +73,7 @@ q
         data = {"attrs":attrs, "start":start, "end":end}
         return self.s.get(url, json=data)
 
-    def stat_hourly_aps(self, site=None, start, end, mac):
+    def stat_hourly_aps(self, site=None, start=0, end=0, mac=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/report/hourly.ap'
@@ -82,7 +82,7 @@ q
         data = {"attrs":attrs, "start":start, "end":end}
         return self.s.get(url, json=data)
 
-    def stat_daily_aps(self, site=None, start, end, mac):
+    def stat_daily_aps(self, site=None, start=0, end=0, mac=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/report/daily.ap'
@@ -92,7 +92,7 @@ q
         return self.s.get(url, json=data)
 
 
-    def stat_sessions(self, site=None, start, end, mac, type='all'):
+    def stat_sessions(self, site=None, start=0, end=0, mac=None, type='all'):
         if not site:
             site = self.default_site
         endpoint = '/api/s' + site + '/stat/session'
@@ -100,7 +100,7 @@ q
         data = {"start":start, "end":end, "mac":mac}
         return self.s.get(url, json=data)
 
-    def stat_sta_sessions_latest(self, site=None ,mac,limit):
+    def stat_sta_sessions_latest(self, site=None ,mac=None,limit=0):
         if not site:
             site = self.default_site
         endpoint = '/api/s' + site + '/stat/session'
@@ -108,16 +108,16 @@ q
         data = {"mac":mac,"_limit":limit,"_sort":sort,"-assoc_time":time}
         return self.s.get(url, json=data)
 
-    def stat_auths(self, site=None, start,end):
+    def stat_auths(self, site=None, start=0,end=0):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/authorization'
         url = self.base_url + endpoint
         data = {"start":start, "end":end}
-        return = self.s.get(url, json=data)
+        return self.s.get(url, json=data)
 
     # List all clients ever connected to the site
-    def stat_allusers(self, site=None, hours):
+    def stat_allusers(self, site=None, hours=0):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/alluser'
@@ -134,14 +134,14 @@ q
         data = {"within":within}
         return self.s.get(url, json=data)
 
-    def list_clients(self, site=None, client_mac):
+    def list_clients(self, site=None, client_mac=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/sta' + client_mac
         url = self.base_url + endpoint
         return self.s.get(url)
 
-    def stat_client(self, site=None, client_mac):
+    def stat_client(self, site=None, client_mac=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/user' + client_mac
@@ -155,7 +155,7 @@ q
         url = self.base_url + endpoint
         return self.s.get(url)
 
-    def set_usergroup(self, site=None, user_id, group_id):
+    def set_usergroup(self, site=None, user_id=None, group_id=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/upd/user/' + user_id
@@ -164,7 +164,7 @@ q
         return self.s.get(url, json=data)
 
     # Update user group
-    def edit_usergroup(self, site=None, group_id,site_id,group_name,group_dn = -1,group_up = -1):
+    def edit_usergroup(self, site=None, group_id=None,site_id=None,group_name=None,group_dn = -1,group_up = -1):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
@@ -172,7 +172,7 @@ q
         data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
         return self.s.get(url, json=data)
 
-    def create_usergroup(self, site=None, group_name,grouop_dn = -1,group_up = -1):
+    def create_usergroup(self, site=None, group_name=None,grouop_dn = -1,group_up = -1):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
@@ -180,7 +180,7 @@ q
         data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
         return self.s.get(url, json=data)
 
-    def delete_usergroup(self, site=None, group_id):
+    def delete_usergroup(self, site=None, group_id=None):
         if not site:
             site = self.default_site
         request_type = 'DELETE'
@@ -211,7 +211,7 @@ q
         url = self.base_url + endpoint
         return self.s.get(url)
 
-    def list_devices(self, site=None, device_mac):
+    def list_devices(self, site=None, device_mac=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/stat/device' + device_mac
@@ -242,7 +242,7 @@ q
         url = self.base_url + endpoint
         return self.s.get(url)
 
-    def create_site(self, site=None, desc):
+    def create_site(self, site=None, desc=None):
         if not site:
             site = self.default_site
         endpoint = '/api/s/' + site + '/cmd/sitemgr'
