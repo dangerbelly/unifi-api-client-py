@@ -118,6 +118,8 @@ q
 
     # List all clients ever connected to the site
     def stat_allusers(self, site=None, hours):
+        if not site:
+            site = self.default_site
         endpoint = '/api/s/' + site + '/stat/alluser'
         url = self.base_url + endpoint
         data = {"type":"all","conn":"all","within":hours}
