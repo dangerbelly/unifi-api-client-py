@@ -91,10 +91,12 @@ class Client:
         data = {"attrs":attrs, "start":start, "end":end}
         return self.s.get(url, json=data)
 
-# MAC needed for this request
+# debug: api.err.NoSiteContext
 #    def stat_sessions(self, site=None, start=0, end=0, mac=None, type='all'):
 #        if not site:
 #            site = self.default_site
+#        if not mac:
+#            mac = ''
 #        endpoint = '/api/s' + site + '/stat/session'
 #        url = self.base_url + endpoint
 #        data = {"start":start, "end":end, "mac":mac}
@@ -147,8 +149,8 @@ class Client:
     def stat_client(self, site=None, client_mac=None):
         if not site:
             site = self.default_site
-            if not client_mac:
-                client_mac = ''
+        if not client_mac:
+            client_mac = ''
         endpoint = '/api/s/' + site + '/stat/user' + client_mac
         url = self.base_url + endpoint
         return self.s.get(url)
@@ -176,6 +178,7 @@ class Client:
 #        data = {"_id":group_id, "name":group_name, "qos_rate_max_down":group_dn, "qos_rate_max_up":group_up,"site_id":site_id}
 #        return self.s.get(url, json=data)
 
+# debug: How to get referer url? What is pp=... ?
 #    def create_usergroup(self, site=None, group_name=None,grouop_dn = -1,group_up = -1):
 #            site = self.default_site
 #        endpoint = '/api/s/' + site + '/rest/usergroup' + group_id
@@ -214,12 +217,12 @@ class Client:
         url = self.base_url + endpoint
         return self.s.get(url)
 
-    def list_devices(self, site=None, device_mac=None):
+    def list_devices(self, site=None, mac=None):
         if not site:
             site = self.default_site
-        if not device_mac:
-            device_mac = ''
-        endpoint = '/api/s/' + site + '/stat/device' + device_mac
+        if not mac:
+            mac = ''
+        endpoint = '/api/s/' + site + '/stat/device' + mac
         url = self.base_url + endpoint
         return self.s.get(url)
 
@@ -249,10 +252,22 @@ class Client:
 
     def create_site(self, site=None, desc=None):
         if not site:
-            site = self.default_site
+            site = self.default_sites
         endpoint = '/api/s/' + site + '/cmd/sitemgr'
         data = {"cmd":"add-site","desc":desc}
         url = self.base_url + endpoint
         referer = self.base_url + '/manage/site/' + site + '/dashboard'
+        headers = {'X-Csrf-Token':self.csrf_token,'referer':referer}
+        return self.s.post(url, json=data, headers=headers)
+
+    def adopt_device(self, site=None, mac=None):
+        if not site:
+            site = self.default_site
+        if not mac:
+            mac = ''
+        endpoint = '/api/s/' + site + '/cmd/devmgr'
+        url = self.base_url + endpoint
+        data = {"mac":mac,"cmd":"adopt"}
+        referer = self.base_url + '/manage/site/' + site + '/devices/1/50'
         headers = {'X-Csrf-Token':self.csrf_token,'referer':referer}
         return self.s.post(url, json=data, headers=headers)
